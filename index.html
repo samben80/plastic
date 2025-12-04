@@ -597,8 +597,8 @@
         // Traductions
         const translations = {
             fr: {
-                title: "Production Sacs",
-                subtitle: "Calculateur Complet",
+                title: "Sac en Rouleau",
+                subtitle: "Assistant de Calcul",
                 speedTitle: "⚡ Vitesse de Production",
                 widthLabel: "Largeur du sac",
                 bagsPerRollLabel: "Sacs par rouleau",
@@ -761,8 +761,8 @@
             const t = translations[lang];
 
             // États pour la vitesse
-            const [largeur, setLargeur] = useState(650);
-            const [sacsParRouleau, setSacsParRouleau] = useState(10);
+            const [largeur, setLargeur] = useState('650');
+            const [sacsParRouleau, setSacsParRouleau] = useState('10');
             const [vitesse, setVitesse] = useState(0);
             const [rouleauxParMinute, setRouleauxParMinute] = useState(0);
             const [limiteActive, setLimiteActive] = useState('rouleaux');
@@ -770,15 +770,15 @@
 
             // États pour le poids
             const [modeCalculPoids, setModeCalculPoids] = useState('auto');
-            const [longueur, setLongueur] = useState(300);
-            const [epaisseur, setEpaisseur] = useState(30);
-            const [densite, setDensite] = useState(0.92);
+            const [longueur, setLongueur] = useState('300');
+            const [epaisseur, setEpaisseur] = useState('30');
+            const [densite, setDensite] = useState('0.92');
             const [poidsSac, setPoidsSac] = useState(0);
-            const [poidsManuel, setPoidsManuel] = useState(0);
+            const [poidsManuel, setPoidsManuel] = useState('');
 
             // États pour la production
-            const [nombreShifts, setNombreShifts] = useState(2);
-            const [heuresParShift, setHeuresParShift] = useState(8);
+            const [nombreShifts, setNombreShifts] = useState('2');
+            const [heuresParShift, setHeuresParShift] = useState('8');
 
             useEffect(() => {
                 // Changer la direction du document pour l'arabe
@@ -789,7 +789,9 @@
             }, [lang]);
 
             useEffect(() => {
-                if (largeur > 0 && sacsParRouleau > 0) {
+                const l = parseFloat(largeur) || 0;
+                const spr = parseFloat(sacsParRouleau) || 0;
+                if (l > 0 && spr > 0) {
                     calculerVitesse();
                 }
             }, [largeur, sacsParRouleau]);
@@ -798,7 +800,7 @@
                 if (modeCalculPoids === 'auto') {
                     calculerPoidsSac();
                 } else {
-                    setPoidsSac(poidsManuel);
+                    setPoidsSac(parseFloat(poidsManuel) || 0);
                 }
             }, [modeCalculPoids, largeur, longueur, epaisseur, densite, poidsManuel]);
 
@@ -806,34 +808,44 @@
                 const MAX_ROULEAUX = 22;
                 const MAX_VITESSE = 160;
 
-                const vitesseTheorique = (MAX_ROULEAUX * sacsParRouleau * largeur) / 1000;
+                const l = parseFloat(largeur) || 0;
+                const spr = parseFloat(sacsParRouleau) || 0;
+
+                const vitesseTheorique = (MAX_ROULEAUX * spr * l) / 1000;
 
                 if (vitesseTheorique <= MAX_VITESSE) {
                     setVitesse(vitesseTheorique);
                     setRouleauxParMinute(MAX_ROULEAUX);
                     setLimiteActive('rouleaux');
-                    setSacsParMinute(MAX_ROULEAUX * sacsParRouleau);
+                    setSacsParMinute(MAX_ROULEAUX * spr);
                 } else {
-                    const rouleauxCalcules = (MAX_VITESSE * 1000) / (sacsParRouleau * largeur);
+                    const rouleauxCalcules = (MAX_VITESSE * 1000) / (spr * l);
                     setVitesse(MAX_VITESSE);
                     setRouleauxParMinute(rouleauxCalcules);
                     setLimiteActive('vitesse');
-                    setSacsParMinute(rouleauxCalcules * sacsParRouleau);
+                    setSacsParMinute(rouleauxCalcules * spr);
                 }
             };
 
             const calculerPoidsSac = () => {
-                const largeurCm = largeur * 0.1;
-                const longueurCm = longueur * 0.1;
-                const epaisseurCm = epaisseur * 0.0001;
+                const l = parseFloat(largeur) || 0;
+                const lon = parseFloat(longueur) || 0;
+                const ep = parseFloat(epaisseur) || 0;
+                const d = parseFloat(densite) || 0;
+
+                const largeurCm = l * 0.1;
+                const longueurCm = lon * 0.1;
+                const epaisseurCm = ep * 0.0001;
                 const volume = largeurCm * 2 * longueurCm * epaisseurCm;
-                const poids = volume * densite;
+                const poids = volume * d;
                 setPoidsSac(poids);
             };
 
             const sacsParHeure = sacsParMinute * 60;
-            const sacsParShift = sacsParHeure * heuresParShift;
-            const sacsParJour = sacsParShift * nombreShifts;
+            const heuresShift = parseFloat(heuresParShift) || 0;
+            const shifts = parseFloat(nombreShifts) || 0;
+            const sacsParShift = sacsParHeure * heuresShift;
+            const sacsParJour = sacsParShift * shifts;
             
             const poidsParHeure = sacsParHeure * poidsSac / 1000;
             const poidsParShift = sacsParShift * poidsSac / 1000;
@@ -897,7 +909,7 @@
                                     <input
                                         type="number"
                                         value={largeur}
-                                        onChange={(e) => setLargeur(Number(e.target.value))}
+                                        onChange={(e) => setLargeur(e.target.value)}
                                         min="1"
                                         step="1"
                                         inputMode="numeric"
@@ -912,7 +924,7 @@
                                     <input
                                         type="number"
                                         value={sacsParRouleau}
-                                        onChange={(e) => setSacsParRouleau(Number(e.target.value))}
+                                        onChange={(e) => setSacsParRouleau(e.target.value)}
                                         min="1"
                                         step="1"
                                         inputMode="numeric"
@@ -975,7 +987,7 @@
                                             <input
                                                 type="number"
                                                 value={longueur}
-                                                onChange={(e) => setLongueur(Number(e.target.value))}
+                                                onChange={(e) => setLongueur(e.target.value)}
                                                 min="1"
                                                 step="1"
                                                 inputMode="numeric"
@@ -991,7 +1003,7 @@
                                                 <input
                                                     type="number"
                                                     value={epaisseur}
-                                                    onChange={(e) => setEpaisseur(Number(e.target.value))}
+                                                    onChange={(e) => setEpaisseur(e.target.value)}
                                                     min="1"
                                                     step="1"
                                                     inputMode="numeric"
@@ -1006,7 +1018,7 @@
                                                 <input
                                                     type="number"
                                                     value={densite}
-                                                    onChange={(e) => setDensite(Number(e.target.value))}
+                                                    onChange={(e) => setDensite(e.target.value)}
                                                     min="0.01"
                                                     step="0.01"
                                                     inputMode="decimal"
@@ -1023,7 +1035,7 @@
                                         <input
                                             type="number"
                                             value={poidsManuel}
-                                            onChange={(e) => setPoidsManuel(Number(e.target.value))}
+                                            onChange={(e) => setPoidsManuel(e.target.value)}
                                             min="0"
                                             step="0.1"
                                             inputMode="decimal"
@@ -1051,7 +1063,7 @@
                                         <input
                                             type="number"
                                             value={nombreShifts}
-                                            onChange={(e) => setNombreShifts(Number(e.target.value))}
+                                            onChange={(e) => setNombreShifts(e.target.value)}
                                             min="1"
                                             step="1"
                                             inputMode="numeric"
@@ -1065,7 +1077,7 @@
                                         <input
                                             type="number"
                                             value={heuresParShift}
-                                            onChange={(e) => setHeuresParShift(Number(e.target.value))}
+                                            onChange={(e) => setHeuresParShift(e.target.value)}
                                             min="1"
                                             step="0.5"
                                             inputMode="decimal"
@@ -1098,7 +1110,7 @@
                                 </div>
 
                                 <div className="summary-card" style={{gridColumn: '1 / -1'}}>
-                                    <div className="summary-card-label">{t.perDay} ({nombreShifts} {t.shifts})</div>
+                                    <div className="summary-card-label">{t.perDay} ({shifts} {t.shifts})</div>
                                     <div className="summary-card-value" style={{fontSize: '28px', color: 'var(--secondary)'}}>
                                         {Math.round(sacsParJour).toLocaleString()}
                                         <div className="small-unit">{t.bags}</div>
