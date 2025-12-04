@@ -7,7 +7,7 @@
     <title>Calculateur Production Sacs</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -31,6 +31,10 @@
             font-size: 16px;
         }
 
+        html[dir="rtl"] {
+            direction: rtl;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -43,6 +47,14 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        body[lang="ar"] {
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+        }
+
+        body[lang="zh"] {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+        }
+
         .container {
             width: 100%;
             max-width: 480px;
@@ -51,6 +63,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             animation: slideIn 0.5s ease-out;
+            position: relative;
         }
 
         @keyframes slideIn {
@@ -69,6 +82,7 @@
             padding: 32px 24px;
             color: white;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
@@ -80,9 +94,61 @@
             text-transform: uppercase;
         }
 
+        body[lang="ar"] .header h1,
+        body[lang="zh"] .header h1 {
+            font-family: inherit;
+            letter-spacing: 0;
+        }
+
         .header p {
             font-size: 14px;
             opacity: 0.9;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        [dir="rtl"] .language-selector {
+            right: auto;
+            left: 16px;
+        }
+
+        .lang-btn {
+            width: 38px;
+            height: 38px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            touch-action: manipulation;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .lang-btn.active {
+            background: white;
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .lang-btn:active {
+            transform: scale(0.95);
         }
 
         .content {
@@ -103,6 +169,11 @@
             letter-spacing: 0.5px;
         }
 
+        body[lang="ar"] .input-group label,
+        body[lang="zh"] .input-group label {
+            text-transform: none;
+        }
+
         .input-wrapper {
             position: relative;
         }
@@ -116,6 +187,10 @@
             border-radius: 12px;
             transition: all 0.3s ease;
             background: var(--light);
+        }
+
+        [dir="rtl"] .input-group input {
+            text-align: right;
         }
 
         .input-group input:focus {
@@ -134,6 +209,11 @@
             font-weight: 600;
             color: #64748b;
             pointer-events: none;
+        }
+
+        [dir="rtl"] .unit {
+            right: auto;
+            left: 16px;
         }
 
         .results {
@@ -168,6 +248,17 @@
             }
         }
 
+        [dir="rtl"] @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .result-label {
             font-size: 14px;
             font-weight: 500;
@@ -176,11 +267,21 @@
             letter-spacing: 0.5px;
         }
 
+        body[lang="ar"] .result-label,
+        body[lang="zh"] .result-label {
+            text-transform: none;
+        }
+
         .result-value {
             font-family: 'Orbitron', sans-serif;
             font-size: 28px;
             font-weight: 700;
             color: var(--dark);
+        }
+
+        body[lang="ar"] .result-value,
+        body[lang="zh"] .result-value {
+            font-family: inherit;
         }
 
         .result-value.highlight {
@@ -197,6 +298,12 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             animation: pulse 2s ease-in-out infinite;
+            text-align: center;
+        }
+
+        body[lang="ar"] .limit-badge,
+        body[lang="zh"] .limit-badge {
+            text-transform: none;
         }
 
         @keyframes pulse {
@@ -226,6 +333,11 @@
             border-left: 4px solid var(--secondary);
         }
 
+        [dir="rtl"] .production-info {
+            border-left: none;
+            border-right: 4px solid var(--secondary);
+        }
+
         .production-info-label {
             font-size: 12px;
             font-weight: 600;
@@ -233,6 +345,11 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
+        }
+
+        body[lang="ar"] .production-info-label,
+        body[lang="zh"] .production-info-label {
+            text-transform: none;
         }
 
         .production-info-value {
@@ -259,6 +376,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        body[lang="ar"] .section-title,
+        body[lang="zh"] .section-title {
+            text-transform: none;
         }
 
         .section-title::before {
@@ -322,11 +444,21 @@
             margin-bottom: 8px;
         }
 
+        body[lang="ar"] .highlight-box-label,
+        body[lang="zh"] .highlight-box-label {
+            text-transform: none;
+        }
+
         .highlight-box-value {
             font-family: 'Orbitron', sans-serif;
             font-size: 32px;
             font-weight: 700;
             color: var(--dark);
+        }
+
+        body[lang="ar"] .highlight-box-value,
+        body[lang="zh"] .highlight-box-value {
+            font-family: inherit;
         }
 
         .production-summary {
@@ -353,6 +485,11 @@
             margin-bottom: 8px;
         }
 
+        body[lang="ar"] .summary-card-label,
+        body[lang="zh"] .summary-card-label {
+            text-transform: none;
+        }
+
         .summary-card-value {
             font-size: 22px;
             font-weight: 700;
@@ -364,6 +501,11 @@
             font-weight: 500;
             color: #64748b;
             margin-left: 4px;
+        }
+
+        [dir="rtl"] .small-unit {
+            margin-left: 0;
+            margin-right: 4px;
         }
 
         @media (max-width: 480px) {
@@ -381,6 +523,23 @@
 
             .header h1 {
                 font-size: 20px;
+            }
+
+            .language-selector {
+                top: 12px;
+                right: 12px;
+                gap: 4px;
+            }
+
+            [dir="rtl"] .language-selector {
+                right: auto;
+                left: 12px;
+            }
+
+            .lang-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
             }
 
             .content {
@@ -413,7 +572,6 @@
             }
         }
 
-        /* Loading indicator */
         .loading {
             display: flex;
             justify-content: center;
@@ -436,7 +594,172 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
+        // Traductions
+        const translations = {
+            fr: {
+                title: "Production Sacs",
+                subtitle: "Calculateur Complet",
+                speedTitle: "⚡ Vitesse de Production",
+                widthLabel: "Largeur du sac",
+                bagsPerRollLabel: "Sacs par rouleau",
+                speedLabel: "Vitesse",
+                rollsPerMinLabel: "Rouleaux/min",
+                limitByRolls: "✓ Limité par rouleaux (22 rlx/min)",
+                limitBySpeed: "⚠ Limité par vitesse (160 m/min)",
+                productionLabel: "Production",
+                weightTitle: "⚖️ Poids du Sac",
+                autoCalc: "Calcul Auto",
+                manualInput: "Saisie Manuelle",
+                lengthLabel: "Longueur du sac",
+                thicknessLabel: "Épaisseur",
+                densityLabel: "Densité",
+                weightLabel: "Poids du sac",
+                unitWeightLabel: "Poids unitaire",
+                totalProdTitle: "📊 Production Totale",
+                shiftsLabel: "Nombre de Shifts",
+                hoursPerShiftLabel: "Heures/Shift",
+                perHour: "Par Heure",
+                perShift: "Par Shift",
+                perDay: "Par Jour",
+                bags: "sacs",
+                rolls: "rlx",
+                grams: "grammes",
+                tons: "tonnes",
+                shifts: "shifts"
+            },
+            en: {
+                title: "Bag Production",
+                subtitle: "Complete Calculator",
+                speedTitle: "⚡ Production Speed",
+                widthLabel: "Bag Width",
+                bagsPerRollLabel: "Bags per Roll",
+                speedLabel: "Speed",
+                rollsPerMinLabel: "Rolls/min",
+                limitByRolls: "✓ Limited by rolls (22 rolls/min)",
+                limitBySpeed: "⚠ Limited by speed (160 m/min)",
+                productionLabel: "Production",
+                weightTitle: "⚖️ Bag Weight",
+                autoCalc: "Auto Calc",
+                manualInput: "Manual Input",
+                lengthLabel: "Bag Length",
+                thicknessLabel: "Thickness",
+                densityLabel: "Density",
+                weightLabel: "Bag Weight",
+                unitWeightLabel: "Unit Weight",
+                totalProdTitle: "📊 Total Production",
+                shiftsLabel: "Number of Shifts",
+                hoursPerShiftLabel: "Hours/Shift",
+                perHour: "Per Hour",
+                perShift: "Per Shift",
+                perDay: "Per Day",
+                bags: "bags",
+                rolls: "rolls",
+                grams: "grams",
+                tons: "tons",
+                shifts: "shifts"
+            },
+            tr: {
+                title: "Torba Üretimi",
+                subtitle: "Tam Hesaplayıcı",
+                speedTitle: "⚡ Üretim Hızı",
+                widthLabel: "Torba Genişliği",
+                bagsPerRollLabel: "Rulo Başına Torba",
+                speedLabel: "Hız",
+                rollsPerMinLabel: "Rulo/dk",
+                limitByRolls: "✓ Rulo ile sınırlı (22 rulo/dk)",
+                limitBySpeed: "⚠ Hız ile sınırlı (160 m/dk)",
+                productionLabel: "Üretim",
+                weightTitle: "⚖️ Torba Ağırlığı",
+                autoCalc: "Otomatik Hesap",
+                manualInput: "Manuel Giriş",
+                lengthLabel: "Torba Uzunluğu",
+                thicknessLabel: "Kalınlık",
+                densityLabel: "Yoğunluk",
+                weightLabel: "Torba Ağırlığı",
+                unitWeightLabel: "Birim Ağırlık",
+                totalProdTitle: "📊 Toplam Üretim",
+                shiftsLabel: "Vardiya Sayısı",
+                hoursPerShiftLabel: "Saat/Vardiya",
+                perHour: "Saatlik",
+                perShift: "Vardiya Başına",
+                perDay: "Günlük",
+                bags: "torba",
+                rolls: "rulo",
+                grams: "gram",
+                tons: "ton",
+                shifts: "vardiya"
+            },
+            ar: {
+                title: "إنتاج الأكياس",
+                subtitle: "حاسبة كاملة",
+                speedTitle: "⚡ سرعة الإنتاج",
+                widthLabel: "عرض الكيس",
+                bagsPerRollLabel: "أكياس لكل لفة",
+                speedLabel: "السرعة",
+                rollsPerMinLabel: "لفات/دقيقة",
+                limitByRolls: "✓ محدود باللفات (22 لفة/دقيقة)",
+                limitBySpeed: "⚠ محدود بالسرعة (160 م/دقيقة)",
+                productionLabel: "الإنتاج",
+                weightTitle: "⚖️ وزن الكيس",
+                autoCalc: "حساب تلقائي",
+                manualInput: "إدخال يدوي",
+                lengthLabel: "طول الكيس",
+                thicknessLabel: "السُمك",
+                densityLabel: "الكثافة",
+                weightLabel: "وزن الكيس",
+                unitWeightLabel: "الوزن الوحدوي",
+                totalProdTitle: "📊 الإنتاج الإجمالي",
+                shiftsLabel: "عدد الورديات",
+                hoursPerShiftLabel: "ساعات/وردية",
+                perHour: "في الساعة",
+                perShift: "في الوردية",
+                perDay: "في اليوم",
+                bags: "كيس",
+                rolls: "لفة",
+                grams: "غرام",
+                tons: "طن",
+                shifts: "وردية"
+            },
+            zh: {
+                title: "袋子生产",
+                subtitle: "完整计算器",
+                speedTitle: "⚡ 生产速度",
+                widthLabel: "袋子宽度",
+                bagsPerRollLabel: "每卷袋数",
+                speedLabel: "速度",
+                rollsPerMinLabel: "卷/分钟",
+                limitByRolls: "✓ 受卷数限制（22卷/分钟）",
+                limitBySpeed: "⚠ 受速度限制（160米/分钟）",
+                productionLabel: "产量",
+                weightTitle: "⚖️ 袋子重量",
+                autoCalc: "自动计算",
+                manualInput: "手动输入",
+                lengthLabel: "袋子长度",
+                thicknessLabel: "厚度",
+                densityLabel: "密度",
+                weightLabel: "袋子重量",
+                unitWeightLabel: "单位重量",
+                totalProdTitle: "📊 总产量",
+                shiftsLabel: "班次数量",
+                hoursPerShiftLabel: "每班小时数",
+                perHour: "每小时",
+                perShift: "每班",
+                perDay: "每天",
+                bags: "袋",
+                rolls: "卷",
+                grams: "克",
+                tons: "吨",
+                shifts: "班次"
+            }
+        };
+
         function CalculateurProduction() {
+            // Langue
+            const [lang, setLang] = useState(() => {
+                return localStorage.getItem('bagCalcLang') || 'fr';
+            });
+            const t = translations[lang];
+
             // États pour la vitesse
             const [largeur, setLargeur] = useState(650);
             const [sacsParRouleau, setSacsParRouleau] = useState(10);
@@ -456,6 +779,14 @@
             // États pour la production
             const [nombreShifts, setNombreShifts] = useState(2);
             const [heuresParShift, setHeuresParShift] = useState(8);
+
+            useEffect(() => {
+                // Changer la direction du document pour l'arabe
+                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+                document.documentElement.lang = lang;
+                document.body.lang = lang;
+                localStorage.setItem('bagCalcLang', lang);
+            }, [lang]);
 
             useEffect(() => {
                 if (largeur > 0 && sacsParRouleau > 0) {
@@ -508,19 +839,60 @@
             const poidsParShift = sacsParShift * poidsSac / 1000;
             const poidsParJour = sacsParJour * poidsSac / 1000;
 
+            const changeLang = (newLang) => {
+                setLang(newLang);
+            };
+
             return (
                 <div className="container">
                     <div className="header">
-                        <h1>Production Sacs</h1>
-                        <p>Calculateur Complet</p>
+                        <div className="language-selector">
+                            <button 
+                                className={`lang-btn ${lang === 'fr' ? 'active' : ''}`}
+                                onClick={() => changeLang('fr')}
+                                title="Français"
+                            >
+                                🇫🇷
+                            </button>
+                            <button 
+                                className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
+                                onClick={() => changeLang('en')}
+                                title="English"
+                            >
+                                🇬🇧
+                            </button>
+                            <button 
+                                className={`lang-btn ${lang === 'tr' ? 'active' : ''}`}
+                                onClick={() => changeLang('tr')}
+                                title="Türkçe"
+                            >
+                                🇹🇷
+                            </button>
+                            <button 
+                                className={`lang-btn ${lang === 'ar' ? 'active' : ''}`}
+                                onClick={() => changeLang('ar')}
+                                title="العربية"
+                            >
+                                🇸🇦
+                            </button>
+                            <button 
+                                className={`lang-btn ${lang === 'zh' ? 'active' : ''}`}
+                                onClick={() => changeLang('zh')}
+                                title="中文"
+                            >
+                                🇨🇳
+                            </button>
+                        </div>
+                        <h1>{t.title}</h1>
+                        <p>{t.subtitle}</p>
                     </div>
 
                     <div className="content">
                         <div className="section">
-                            <div className="section-title">⚡ Vitesse de Production</div>
+                            <div className="section-title">{t.speedTitle}</div>
                             
                             <div className="input-group">
-                                <label>Largeur du sac</label>
+                                <label>{t.widthLabel}</label>
                                 <div className="input-wrapper">
                                     <input
                                         type="number"
@@ -535,7 +907,7 @@
                             </div>
 
                             <div className="input-group">
-                                <label>Sacs par rouleau</label>
+                                <label>{t.bagsPerRollLabel}</label>
                                 <div className="input-wrapper">
                                     <input
                                         type="number"
@@ -545,62 +917,60 @@
                                         step="1"
                                         inputMode="numeric"
                                     />
-                                    <span className="unit">sacs</span>
+                                    <span className="unit">{t.bags}</span>
                                 </div>
                             </div>
 
                             <div className="results">
                                 <div className="result-item">
-                                    <span className="result-label">Vitesse</span>
+                                    <span className="result-label">{t.speedLabel}</span>
                                     <span className="result-value highlight">
                                         {vitesse.toFixed(1)} m/min
                                     </span>
                                 </div>
 
                                 <div className="result-item">
-                                    <span className="result-label">Rouleaux/min</span>
+                                    <span className="result-label">{t.rollsPerMinLabel}</span>
                                     <span className="result-value">
-                                        {rouleauxParMinute.toFixed(1)} rlx
+                                        {rouleauxParMinute.toFixed(1)} {t.rolls}
                                     </span>
                                 </div>
 
                                 <div className={`limit-badge ${limiteActive}`}>
-                                    {limiteActive === 'rouleaux' 
-                                        ? '✓ Limité par rouleaux (22 rlx/min)' 
-                                        : '⚠ Limité par vitesse (160 m/min)'}
+                                    {limiteActive === 'rouleaux' ? t.limitByRolls : t.limitBySpeed}
                                 </div>
 
                                 <div className="production-info">
-                                    <div className="production-info-label">Production</div>
+                                    <div className="production-info-label">{t.productionLabel}</div>
                                     <div className="production-info-value">
-                                        {Math.round(sacsParMinute)} sacs/min
+                                        {Math.round(sacsParMinute)} {t.bags}/min
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="section">
-                            <div className="section-title">⚖️ Poids du Sac</div>
+                            <div className="section-title">{t.weightTitle}</div>
                             
                             <div className="toggle-group">
                                 <button 
                                     className={`toggle-btn ${modeCalculPoids === 'auto' ? 'active' : ''}`}
                                     onClick={() => setModeCalculPoids('auto')}
                                 >
-                                    Calcul Auto
+                                    {t.autoCalc}
                                 </button>
                                 <button 
                                     className={`toggle-btn ${modeCalculPoids === 'manuel' ? 'active' : ''}`}
                                     onClick={() => setModeCalculPoids('manuel')}
                                 >
-                                    Saisie Manuelle
+                                    {t.manualInput}
                                 </button>
                             </div>
 
                             {modeCalculPoids === 'auto' ? (
                                 <>
                                     <div className="input-group">
-                                        <label>Longueur du sac</label>
+                                        <label>{t.lengthLabel}</label>
                                         <div className="input-wrapper">
                                             <input
                                                 type="number"
@@ -616,7 +986,7 @@
 
                                     <div className="input-row">
                                         <div className="input-group">
-                                            <label>Épaisseur</label>
+                                            <label>{t.thicknessLabel}</label>
                                             <div className="input-wrapper">
                                                 <input
                                                     type="number"
@@ -631,7 +1001,7 @@
                                         </div>
 
                                         <div className="input-group">
-                                            <label>Densité</label>
+                                            <label>{t.densityLabel}</label>
                                             <div className="input-wrapper">
                                                 <input
                                                     type="number"
@@ -648,7 +1018,7 @@
                                 </>
                             ) : (
                                 <div className="input-group">
-                                    <label>Poids du sac</label>
+                                    <label>{t.weightLabel}</label>
                                     <div className="input-wrapper">
                                         <input
                                             type="number"
@@ -664,19 +1034,19 @@
                             )}
 
                             <div className="highlight-box">
-                                <div className="highlight-box-label">Poids unitaire</div>
+                                <div className="highlight-box-label">{t.unitWeightLabel}</div>
                                 <div className="highlight-box-value">
-                                    {poidsSac.toFixed(2)} <span className="small-unit">grammes</span>
+                                    {poidsSac.toFixed(2)} <span className="small-unit">{t.grams}</span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="section">
-                            <div className="section-title">📊 Production Totale</div>
+                            <div className="section-title">{t.totalProdTitle}</div>
                             
                             <div className="input-row">
                                 <div className="input-group">
-                                    <label>Nombre de Shifts</label>
+                                    <label>{t.shiftsLabel}</label>
                                     <div className="input-wrapper">
                                         <input
                                             type="number"
@@ -690,7 +1060,7 @@
                                 </div>
 
                                 <div className="input-group">
-                                    <label>Heures/Shift</label>
+                                    <label>{t.hoursPerShiftLabel}</label>
                                     <div className="input-wrapper">
                                         <input
                                             type="number"
@@ -706,10 +1076,10 @@
 
                             <div className="production-summary">
                                 <div className="summary-card">
-                                    <div className="summary-card-label">Par Heure</div>
+                                    <div className="summary-card-label">{t.perHour}</div>
                                     <div className="summary-card-value">
                                         {Math.round(sacsParHeure).toLocaleString()}
-                                        <div className="small-unit">sacs</div>
+                                        <div className="small-unit">{t.bags}</div>
                                     </div>
                                     <div style={{marginTop: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--secondary)'}}>
                                         {poidsParHeure.toFixed(0)} kg
@@ -717,10 +1087,10 @@
                                 </div>
 
                                 <div className="summary-card">
-                                    <div className="summary-card-label">Par Shift</div>
+                                    <div className="summary-card-label">{t.perShift}</div>
                                     <div className="summary-card-value">
                                         {Math.round(sacsParShift).toLocaleString()}
-                                        <div className="small-unit">sacs</div>
+                                        <div className="small-unit">{t.bags}</div>
                                     </div>
                                     <div style={{marginTop: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--secondary)'}}>
                                         {poidsParShift.toFixed(0)} kg
@@ -728,13 +1098,13 @@
                                 </div>
 
                                 <div className="summary-card" style={{gridColumn: '1 / -1'}}>
-                                    <div className="summary-card-label">Par Jour ({nombreShifts} shifts)</div>
+                                    <div className="summary-card-label">{t.perDay} ({nombreShifts} {t.shifts})</div>
                                     <div className="summary-card-value" style={{fontSize: '28px', color: 'var(--secondary)'}}>
                                         {Math.round(sacsParJour).toLocaleString()}
-                                        <div className="small-unit">sacs</div>
+                                        <div className="small-unit">{t.bags}</div>
                                     </div>
                                     <div style={{marginTop: '12px', fontSize: '18px', fontWeight: '700', color: 'var(--dark)'}}>
-                                        {(poidsParJour / 1000).toFixed(2)} tonnes
+                                        {(poidsParJour / 1000).toFixed(2)} {t.tons}
                                     </div>
                                 </div>
                             </div>
@@ -744,13 +1114,11 @@
             );
         }
 
-        // Attendre que les fonts soient chargées
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(() => {
                 ReactDOM.render(<CalculateurProduction />, document.getElementById('root'));
             });
         } else {
-            // Fallback si l'API Font Loading n'est pas disponible
             window.addEventListener('load', () => {
                 ReactDOM.render(<CalculateurProduction />, document.getElementById('root'));
             });
